@@ -135,7 +135,7 @@ glm::vec3 Snow::computeAcceleration(glm::vec3 const &pos, glm::vec3 const &veloc
 
 void Snow::setModel(glm::mat4 const &model)
 {
-    m_model = model;
+    mModel = model;
 }
 
 glm::mat4 Snow::getRotation() const

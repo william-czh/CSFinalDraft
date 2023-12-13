@@ -70,14 +70,14 @@ SnowFall::SnowFall()
         atlas::gl::ShaderUnit(generated::Shader::getShaderDirectory() + "/SnowFalling.frag", GL_FRAGMENT_SHADER)
     };
 
-    m_Shaders.push_back(atlas::gl::Shader(su_Snow));
-    m_Shaders.push_back(atlas::gl::Shader(su));
+    mShaders.push_back(atlas::gl::Shader(su_Snow));
+    mShaders.push_back(atlas::gl::Shader(su));
 
     // Compile and link shaders.
-    m_Shaders[0].compileShaders();
-    m_Shaders[0].linkShaders();
-    m_Shaders[1].compileShaders();
-    m_Shaders[1].linkShaders();
+    mShaders[0].compileShaders();
+    mShaders[0].linkShaders();
+    mShaders[1].compileShaders();
+    mShaders[1].linkShaders();
 
     // Initialize the snowflake size distribution.
     m_SnowSizeDistr = std::normal_distribution<float>(0.0025f, 0.009f);
@@ -174,7 +174,7 @@ void SnowFall::renderGeometry(atlas::math::Matrix4 const &projection, atlas::mat
     glGetIntegerv(GL_VIEWPORT, m_viewport);
 
     // Enable the snow surface shader.
-    m_Shaders[0].enableShaders();
+    mShaders[0].enableShaders();
     
     // Bind the snow framebuffer and clear the depth buffer.
     glBindFramebuffer(GL_FRAMEBUFFER, m_SnowFBO);
@@ -189,14 +189,14 @@ void SnowFall::renderGeometry(atlas::math::Matrix4 const &projection, atlas::mat
     // Set up the view and projection matrices for the skybox.
     glm::mat4 viewSky = glm::lookAt(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     glm::mat4 projSky = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.01f, 100.0f);            
-    glm::mat4 m_ViewProj = projSky * viewSky * m_model;
+    glm::mat4 m_ViewProj = projSky * viewSky * mModel;
 
     // Set shader uniforms.
-    const GLint MODEL_VIEW_PROJECTION_UNIFORM_LOCATION = glGetUniformLocation(m_Shaders[0].getShaderProgram(), "ModelViewProjection");
+    const GLint MODEL_VIEW_PROJECTION_UNIFORM_LOCATION = glGetUniformLocation(mShaders[0].getShaderProgram(), "ModelViewProjection");
     glUniformMatrix4fv(MODEL_VIEW_PROJECTION_UNIFORM_LOCATION, 1, GL_FALSE, &m_ViewProj[0][0]);
 
-    const GLint MODEL_UNIFORM_LOCATION = glGetUniformLocation(m_Shaders[0].getShaderProgram(), "Model");
-    glUniformMatrix4fv(MODEL_UNIFORM_LOCATION, 1, GL_FALSE, &m_model[0][0]);
+    const GLint MODEL_UNIFORM_LOCATION = glGetUniformLocation(mShaders[0].getShaderProgram(), "Model");
+    glUniformMatrix4fv(MODEL_UNIFORM_LOCATION, 1, GL_FALSE, &mModel[0][0]);
 
     // Bind vertex array and draw the snow surface.
     glBindVertexArray(m_VAO);  
@@ -204,7 +204,7 @@ void SnowFall::renderGeometry(atlas::math::Matrix4 const &projection, atlas::mat
     glBindVertexArray(0);
 
     // Disable the snow surface shader.
-    m_Shaders[0].disableShaders();
+    mShaders[0].disableShaders();
     
     // Disable polygon offset.
     glPolygonOffset(0.0f, 0.0f);        
@@ -218,11 +218,11 @@ void SnowFall::renderGeometry(atlas::math::Matrix4 const &projection, atlas::mat
     // Render falling snow.
     {
     // Enable the falling snow shader.
-    m_Shaders[1].enableShaders();
+    mShaders[1].enableShaders();
     
     // Set up the model-view-projection matrix for falling snow.
-    glm::mat4 m_ViewProj = projection * view * m_model;
-    const GLint MODEL_VIEW_PROJECTION_UNIFORM_LOCATION = glGetUniformLocation(m_Shaders[1].getShaderProgram(), "ModelViewProjection");
+    glm::mat4 m_ViewProj = projection * view * mModel;
+    const GLint MODEL_VIEW_PROJECTION_UNIFORM_LOCATION = glGetUniformLocation(mShaders[1].getShaderProgram(), "ModelViewProjection");
     glUniformMatrix4fv(MODEL_VIEW_PROJECTION_UNIFORM_LOCATION, 1, GL_FALSE, &m_ViewProj[0][0]);      
 
     // Bind vertex array and draw falling snow.
@@ -231,7 +231,7 @@ void SnowFall::renderGeometry(atlas::math::Matrix4 const &projection, atlas::mat
     glBindVertexArray(0); 
 
     // Disable the falling snow shader.
-    m_Shaders[1].disableShaders();
+    mShaders[1].disableShaders();
     }
 }
 

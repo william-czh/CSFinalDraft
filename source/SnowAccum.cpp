@@ -148,10 +148,10 @@ SnowAccum::SnowAccum() :
         atlas::gl::ShaderUnit(generated::Shader::getShaderDirectory() + "/SnowAccum.frag", GL_FRAGMENT_SHADER)
     };
     
-    m_Shaders.push_back(atlas::gl::Shader(su));
+    mShaders.push_back(atlas::gl::Shader(su));
     
-    m_Shaders[0].compileShaders();
-    m_Shaders[0].linkShaders(); 
+    mShaders[0].compileShaders();
+    mShaders[0].linkShaders(); 
 }
 
 
@@ -164,11 +164,11 @@ SnowAccum::~SnowAccum()
 void SnowAccum::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::Matrix4 const &view)
 {
     // Enable the shaders.
-    m_Shaders[0].enableShaders();
+    mShaders[0].enableShaders();
 
     // Calculate the Model-View-Projection matrix.
-    glm::mat4 m_ViewProj = projection * view * m_model;
-    const GLint mViewProj_UNIFORMLOC = glGetUniformLocation(m_Shaders[0].getShaderProgram(), "ModelViewProjection");
+    glm::mat4 m_ViewProj = projection * view * mModel;
+    const GLint mViewProj_UNIFORMLOC = glGetUniformLocation(mShaders[0].getShaderProgram(), "ModelViewProjection");
     glUniformMatrix4fv(mViewProj_UNIFORMLOC, 1, GL_FALSE, &m_ViewProj[0][0]);
 
     // Set up the sky matrix for rendering the snow accumulation.
@@ -179,30 +179,30 @@ void SnowAccum::renderGeometry(atlas::math::Matrix4 const &projection, atlas::ma
         0.0f, 0.5f, 0.0f, 0.0f,
         0.0f, 0.0f, 0.5f, 0.0f,
         0.5f, 0.5f, 0.5f, 1.0f);
-    glm::mat4 matSky = matOffset * projSky * viewSky * m_model;
-    const GLint matSky_UNILOC = glGetUniformLocation(m_Shaders[0].getShaderProgram(), "SkyMatrix");
+    glm::mat4 matSky = matOffset * projSky * viewSky * mModel;
+    const GLint matSky_UNILOC = glGetUniformLocation(mShaders[0].getShaderProgram(), "SkyMatrix");
     glUniformMatrix4fv(matSky_UNILOC, 1, GL_FALSE, &matSky[0][0]);
 
     // Set texture uniforms for snow accumulation and normal map.
     glActiveTexture(GL_TEXTURE1);
-    GLint sceneSnowAccum_UNILOC = glGetUniformLocation(m_Shaders[0].getShaderProgram(), "SnowMap");
-    GLint sceneToggleAccum_UNILOC = glGetUniformLocation(m_Shaders[0].getShaderProgram(), "UseSnowMap");
+    GLint sceneSnowAccum_UNILOC = glGetUniformLocation(mShaders[0].getShaderProgram(), "SnowMap");
+    GLint sceneToggleAccum_UNILOC = glGetUniformLocation(mShaders[0].getShaderProgram(), "UseSnowMap");
     glUniform1i(sceneSnowAccum_UNILOC, 1);
     glUniform1i(sceneToggleAccum_UNILOC, m_snowAccum);
     glBindTexture(GL_TEXTURE_2D, ((SnowScene *)atlas::utils::Application::getInstance().getCurrentScene())->getSnowFall().getSnowDepthTexture());
 
     glActiveTexture(GL_TEXTURE2);
-    GLint sceneNorm_UNILOC = glGetUniformLocation(m_Shaders[0].getShaderProgram(), "NormalMap");
-    GLint sceneToggleNorm_UNILOC = glGetUniformLocation(m_Shaders[0].getShaderProgram(), "UseNormalMap");
+    GLint sceneNorm_UNILOC = glGetUniformLocation(mShaders[0].getShaderProgram(), "NormalMap");
+    GLint sceneToggleNorm_UNILOC = glGetUniformLocation(mShaders[0].getShaderProgram(), "UseNormalMap");
     glUniform1i(sceneNorm_UNILOC, 2);
     glUniform1i(sceneToggleNorm_UNILOC, true);
     glBindTexture(GL_TEXTURE_2D, m_NormTexID);
 
     // Set camera and light positions.
-    GLint sceneCamPos_UNILOC = glGetUniformLocation(m_Shaders[0].getShaderProgram(), "CameraPosition");
+    GLint sceneCamPos_UNILOC = glGetUniformLocation(mShaders[0].getShaderProgram(), "CameraPosition");
     glUniform3fv(sceneCamPos_UNILOC, 1, value_ptr(((SnowScene *)atlas::utils::Application::getInstance().getCurrentScene())->getCameraPosition()));
 
-    GLint sceneLightPos_UNILOC = glGetUniformLocation(m_Shaders[0].getShaderProgram(), "LightPosition");
+    GLint sceneLightPos_UNILOC = glGetUniformLocation(mShaders[0].getShaderProgram(), "LightPosition");
     glUniform3fv(sceneLightPos_UNILOC, 1, value_ptr(((SnowScene *)atlas::utils::Application::getInstance().getCurrentScene())->getLightPosition()));
 
     // Enable primitive restart and bind vertex array.
@@ -217,7 +217,7 @@ void SnowAccum::renderGeometry(atlas::math::Matrix4 const &projection, atlas::ma
 
     // Disable primitive restart and shaders.
     glDisable(GL_PRIMITIVE_RESTART);
-    m_Shaders[0].disableShaders();
+    mShaders[0].disableShaders();
 }
 
 void SnowAccum::updateGeometry(atlas::core::Time<> const &t)

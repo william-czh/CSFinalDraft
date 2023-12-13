@@ -80,17 +80,17 @@ Surface::Surface()
 // Atlas Util: Renders the surface using the specified projection and view matrices.
 void Surface::renderGeometry(const atlas::math::Matrix4 &projection, const atlas::math::Matrix4 &view)
 {
-    m_Shaders[0].enableShaders();
+    mShaders[0].enableShaders();
 
-    const glm::mat4 mViewProj = projection * view * m_model;
-    const GLint mViewProj_UNIFORMLOC = glGetUniformLocation(m_Shaders[0].getShaderProgram(), "ModelViewProjection");
+    const glm::mat4 mViewProj = projection * view * mModel;
+    const GLint mViewProj_UNIFORMLOC = glGetUniformLocation(mShaders[0].getShaderProgram(), "ModelViewProjection");
     glUniformMatrix4fv(mViewProj_UNIFORMLOC, 1, GL_FALSE, &mViewProj[0][0]);
 
     glBindVertexArray(m_VAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindVertexArray(0);
 
-    m_Shaders[0].disableShaders();
+    mShaders[0].disableShaders();
 }
 
 // Helper function to buffer and set vertex attribute pointers.
@@ -120,8 +120,8 @@ void Surface::loadAndCompileShaders()
         atlas::gl::ShaderUnit(generated::Shader::getShaderDirectory() + "/scene.frag", GL_FRAGMENT_SHADER)
     };
 
-    m_Shaders.push_back(atlas::gl::Shader(shaderUnits));
+    mShaders.push_back(atlas::gl::Shader(shaderUnits));
 
-    m_Shaders[0].compileShaders();
-    m_Shaders[0].linkShaders();
+    mShaders[0].compileShaders();
+    mShaders[0].linkShaders();
 }

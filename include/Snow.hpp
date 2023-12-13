@@ -53,7 +53,6 @@ class Snow : public atlas::utils::Geometry
                 
         static int amountSnow;
         glm::mat4 mRotMat;
-
 };
 
 #endif

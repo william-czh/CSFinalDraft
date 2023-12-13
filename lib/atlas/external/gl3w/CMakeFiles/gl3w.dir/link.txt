@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libgl3w.a CMakeFiles/gl3w.dir/src/gl3w.c.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libgl3w.a
