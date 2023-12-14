@@ -4,6 +4,8 @@
 #include "Surface.hpp"
 #include "SnowAccum.hpp"
 #include "Shader.hpp"
+#include "Snowball.hpp"
+
 #include <atlas/core/GLFW.hpp>
 #include <atlas/utils/GUI.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -21,9 +23,13 @@ SnowScene::SnowScene() :
     // Create Surface.
     std::unique_ptr<Surface> platform = std::make_unique<Surface>();
 
+    // Create Snowballs.
+    // std::unique_ptr<Snowball> snowball = std::make_unique<Snowball>();
+
     // Add geometries to the vector.
     mGeometries.push_back(std::move(snowfallGen));
     mGeometries.push_back(std::move(platform));
+    // mGeometries.push_back(std::move(snowball));
 }
 
 SnowScene::~SnowScene()
